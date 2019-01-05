@@ -1,0 +1,106 @@
+---
+#########################################
+## Update Webim
+########################################
+- name: Update Webim
+  hosts: all
+  become: yes
+  tasks:
+
+  - name: create
+    file:
+      path: /var/www/webim_ru/login.new
+      mode: 0777
+      owner: www-data
+      group: webim
+      state: directory
+      recurse: yes
+  
+  - name: create
+    file:
+      path: /var/www/webim_ru/login.new/public_html.eta
+      mode: 0777
+      owner: www-data
+      group: webim
+      state: directory
+      recurse: yes
+
+  - name: create
+    file:
+      path: /var/www/webim_ru/login.new/python.eta
+      mode: 0777
+      owner: www-data
+      group: webim
+      state: directory
+      recurse: yes
+
+  - name: Copy webim-php
+    command: cp -r /tmp/webim-php.tar.gz /var/www/webim_ru/login.new/public_html.eta/
+   
+
+  - name: Extract webim-php
+    unarchive:
+      src: /var/www/webim_ru/login.new/public_html.eta/webim-php.tar.gz
+      dest: /var/www/webim_ru/login.new/public_html.eta
+      mode: 0644
+      owner: www-data
+      group: webim
+      remote_src: yes
+
+  - name: Copy webim-python
+    command: cp -r /tmp/webim-python.tar.gz /var/www/webim_ru/login.new/python.eta/
+
+
+  - name: Extract webim-python
+    unarchive:
+      src: /var/www/webim_ru/login.new/python.eta/webim-python.tar.gz
+      dest: /var/www/webim_ru/login.new/python.eta
+      mode: 0644
+      owner: www-data
+      group: webim
+      remote_src: yes
+
+  - name: Changing perm of "/var/www/webim_ru/login.new/python.eta/server.py", adding "+x"
+    file: dest=/var/www/webim_ru/login.new/python.eta/server.py  mode=a+x
+
+  - name: Stop Nginx 
+    service: name=rh-nginx112-nginx state=stopped
+
+  - name: Stop Php-fpm
+    service: name=rh-php56-php-fpm state=stopped
+
+  - name: Stop supervisord
+    service: name=supervisord  state=stopped
+
+  - name: Move
+    command: mv /var/www/webim_ru/login /var/www/webim_ru/login111111111111
+
+  - name: Move
+    command: mv /var/www/webim_ru/login.new /var/www/webim_ru/login
+
+  - name: rm cache
+    command: rm -rf /var/cache/webim/nginx/*
+
+  - name: find . -type f -delete
+    command: cd /var/cache/webim && find . -type f -delete
+
+  
+  - name: ensure all dir permissions are set correctly
+    shell: find /var/www/webim_ru/login/ -type d -print0 | xargs -0 chmod -c 0755
+    register: chmod_result
+    changed_when: "chmod_result.stdout != \"\""
+
+  - name: ensure all file permissions are set correctly
+    shell: find /var/www/webim_ru/login/ -type f -print0 | xargs -0 chmod -c 0777
+    register: chmod_result
+    changed_when: "chmod_result.stdout != \"\""
+
+  - name: Start Nginx
+    service: name=rh-nginx112-nginx state=started
+
+  - name: Start Php-fpm
+    service: name=rh-php56-php-fpm state=started
+
+  - name: Start supervisord
+    service: name=supervisord state=started
+
