@@ -91,7 +91,7 @@
     changed_when: "chmod_result.stdout != \"\""
 
   - name: ensure all file permissions are set correctly
-    shell: find /var/www/webim_ru/login/ -type f -print0 | xargs -0 chmod -c 0777
+    shell: find /var/www/webim_ru/login/ -type f -print0 | xargs -0 chmod -c 0755
     register: chmod_result
     changed_when: "chmod_result.stdout != \"\""
 
