@@ -10,7 +10,7 @@
   - name: create
     file:
       path: /var/www/webim_ru/login.new
-      mode: 0777
+      mode: 0775
       owner: www-data
       group: webim
       state: directory
@@ -19,7 +19,7 @@
   - name: create
     file:
       path: /var/www/webim_ru/login.new/public_html.eta
-      mode: 0777
+      mode: 0775
       owner: www-data
       group: webim
       state: directory
@@ -28,7 +28,7 @@
   - name: create
     file:
       path: /var/www/webim_ru/login.new/python.eta
-      mode: 0777
+      mode: 0775
       owner: www-data
       group: webim
       state: directory
