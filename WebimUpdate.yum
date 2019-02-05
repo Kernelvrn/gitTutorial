@@ -73,7 +73,7 @@
     service: name=supervisord  state=stopped
 
   - name: Move
-    command: mv /var/www/webim_ru/login /var/www/webim_ru/login111111111111
+    command: mv /var/www/webim_ru/login /var/www/webim_ru/login{{ansible_date_time.date}}
 
   - name: Move
     command: mv /var/www/webim_ru/login.new /var/www/webim_ru/login
