@@ -1,0 +1,5 @@
+---
+- git:
+    repo: https://github.com/Kernelvrn/gitTutorial.git
+    dest: /src/tmp/
+    refspec: '+refs/pull/*:refs/heads/*'
